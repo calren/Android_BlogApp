@@ -1,20 +1,36 @@
 package com.caren.weebly;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.caren.weebly.R;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class CreatePostActivity extends Activity {
 
     private final int REQUEST_CODE = 20;
+    private static final int SELECT_PICTURE = 1;
+    public final String APP_TAG = "MyCustomApp";
+    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    public final static int WRITE_TEXT_ACTIVITY_REQUEST_CODE = 34;
+    public String photoFileName = "photo.jpg";
     ListView lvPostItems;
 
     @Override
@@ -35,12 +51,47 @@ public class CreatePostActivity extends Activity {
 
     public void goToEditText(View view) {
         Intent i = new Intent(CreatePostActivity.this, EditTextActivity.class);
-        startActivityForResult(i, REQUEST_CODE);
+        startActivityForResult(i, WRITE_TEXT_ACTIVITY_REQUEST_CODE);
+    }
+
+    // TODO: this method seems clunky
+    public void addPicture(View view) {
+
+        AlertDialog.Builder getImageFrom = new AlertDialog.Builder(CreatePostActivity.this);
+        getImageFrom.setTitle("Select:");
+        final CharSequence[] opsChars = {"Take a picture", "Open Gallery"};
+        getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener(){
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(which == 0){
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoFileUri(photoFileName)); // set the image file name
+                    // Start the image capture intent to take photo
+                    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                }else if(which == 1){
+
+                }
+                dialog.dismiss();
+            }
+        });
+
+        getImageFrom.show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
+
+        // picture taken
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Uri takenPhotoUri = getPhotoFileUri(photoFileName);
+            // by this point we have the camera photo on disk
+            Bitmap takenImage = BitmapFactory.decodeFile(takenPhotoUri.getPath());
+            System.out.println("picture taken : " + takenImage);
+        }
+
+        // text fields entered
+        if (resultCode == RESULT_OK && requestCode == WRITE_TEXT_ACTIVITY_REQUEST_CODE) {
             String text = data.getExtras().getString("new_item");
 
             System.out.println("text entered was: " + text);
@@ -74,5 +125,20 @@ public class CreatePostActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Returns the Uri for a photo stored on disk given the fileName
+    public Uri getPhotoFileUri(String fileName) {
+        // Get safe storage directory for photos
+        File mediaStorageDir = new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_TAG);
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+            Log.d(APP_TAG, "failed to create directory");
+        }
+
+        // Return the file target for the photo based on filename
+        return Uri.fromFile(new File(mediaStorageDir.getPath() + File.separator + fileName));
     }
 }

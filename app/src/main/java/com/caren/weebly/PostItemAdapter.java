@@ -53,12 +53,15 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
             case 0:
                 TextView tvText = (TextView) convertView.findViewById(R.id.textView);
                 tvText.setText(item.label);
+                break;
             case 1:
                 ImageView ivImage = (ImageView) convertView.findViewById(R.id.imageView);
                 ivImage.setImageURI(Uri.parse(item.label));
+                break;
             case 2:
                 VideoView vvVideo = (VideoView) convertView.findViewById(R.id.videoView);
                 vvVideo.setVideoURI(Uri.parse(item.label));
+                break;
 
         }
 

@@ -14,6 +14,8 @@ public class PostItem {
 
     public PostItem(String label, PostItemValues value) {
         super();
+
+        // either some text, or uri for image/video
         this.label = label;
         this.value = value;
     }

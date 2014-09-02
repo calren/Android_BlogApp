@@ -1,8 +1,5 @@
 package com.caren.weebly;
 
-/**
- * Created by Caren on 9/2/14.
- */
 public class PostItem {
 
     public enum PostItemValues {
@@ -17,6 +14,7 @@ public class PostItem {
 
         // either some text, or uri for image/video
         this.label = label;
+        // TEXT, IMAGE, or VIDEO
         this.value = value;
     }
 

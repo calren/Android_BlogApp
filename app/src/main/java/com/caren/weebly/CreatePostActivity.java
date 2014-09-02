@@ -26,12 +26,14 @@ import java.util.ArrayList;
 public class CreatePostActivity extends Activity {
 
     private final int REQUEST_CODE = 20;
-    private static final int SELECT_PICTURE = 1;
-    public final String APP_TAG = "MyCustomApp";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public final static int WRITE_TEXT_ACTIVITY_REQUEST_CODE = 34;
-    public String photoFileName = "photo.jpg";
+    public final static int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 100;
+    public String photoFileName = "photo.jpg"; //TODO
+
     ListView lvPostItems;
+    PostItemAdapter adapterPosts;
+    ArrayList<PostItem> aPostItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +41,11 @@ public class CreatePostActivity extends Activity {
         setContentView(R.layout.activity_create_post);
 
         lvPostItems = (ListView) findViewById(R.id.lvPostItems);
-        ArrayList<PostItem> aPostItems = new ArrayList<PostItem>();
-        // Populate colors into the array
-        aPostItems.add(new PostItem("Blue", PostItem.PostItemValues.TEXT));
-        aPostItems.add(new PostItem("Green", PostItem.PostItemValues.TEXT));
+        aPostItems = new ArrayList<PostItem>();
+
         // Attach the adapter
-        PostItemAdapter adapterColors = new PostItemAdapter(this, aPostItems);
-        lvPostItems.setAdapter(adapterColors);
+        adapterPosts = new PostItemAdapter(this, aPostItems);
+        lvPostItems.setAdapter(adapterPosts);
 
     }
 
@@ -66,7 +66,7 @@ public class CreatePostActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 if(which == 0){
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoFileUri(photoFileName)); // set the image file name
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri(photoFileName)); // set the image file name
                     // Start the image capture intent to take photo
                     startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                 }else if(which == 1){
@@ -79,33 +79,40 @@ public class CreatePostActivity extends Activity {
         getImageFrom.show();
     }
 
+    public void addVideo (View view) {
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        PostItem postItem;
 
         // picture taken
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Uri takenPhotoUri = getPhotoFileUri(photoFileName);
-            // by this point we have the camera photo on disk
-            Bitmap takenImage = BitmapFactory.decodeFile(takenPhotoUri.getPath());
-            System.out.println("picture taken : " + takenImage);
+            Uri takenPhotoUri = Utils.getPhotoFileUri(photoFileName);
+            postItem = new PostItem(takenPhotoUri.toString(), PostItem.PostItemValues.IMAGE);
+            aPostItems.add(postItem);
+            adapterPosts.notifyDataSetChanged();
+
         }
 
-        // text fields entered
+        // text field entered
         if (resultCode == RESULT_OK && requestCode == WRITE_TEXT_ACTIVITY_REQUEST_CODE) {
             String text = data.getExtras().getString("new_item");
-
-            System.out.println("text entered was: " + text);
-
-            // insert in correct place
-//            preSorted.remove(name);
-//            preSorted.put(name, priority);
-//            items.clear();
-//            for(String item: preSorted.keySet()){
-//                items.add(item);
-//            }
-//            saveItems();
-//            itemsAdapter.notifyDataSetChanged();
+            postItem = new PostItem(text, PostItem.PostItemValues.TEXT);
+            aPostItems.add(postItem);
+            adapterPosts.notifyDataSetChanged();
         }
+
+        // video taken
+        if (resultCode == RESULT_OK && requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
+            //TODO
+            Uri takenVideoUri = Utils.getPhotoFileUri(photoFileName);
+            postItem = new PostItem(takenVideoUri.toString(), PostItem.PostItemValues.VIDEO);
+            aPostItems.add(postItem);
+            adapterPosts.notifyDataSetChanged();
+        }
+
     }
 
     @Override
@@ -125,20 +132,5 @@ public class CreatePostActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    // Returns the Uri for a photo stored on disk given the fileName
-    public Uri getPhotoFileUri(String fileName) {
-        // Get safe storage directory for photos
-        File mediaStorageDir = new File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_TAG);
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
-            Log.d(APP_TAG, "failed to create directory");
-        }
-
-        // Return the file target for the photo based on filename
-        return Uri.fromFile(new File(mediaStorageDir.getPath() + File.separator + fileName));
     }
 }

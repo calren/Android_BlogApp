@@ -18,6 +18,18 @@ public class EditTextActivity extends Activity {
         setContentView(R.layout.activity_edit_text);
     }
 
+    public void finishEditText(View view) {
+        EditText etNewItem = (EditText) findViewById(R.id.etText);
+        Intent data = new Intent();
+        data.putExtra("new_item", etNewItem.getText().toString());
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    //TODO
+    public void delete(View view) {
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -36,19 +48,6 @@ public class EditTextActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void finishEditText(View view) {
-        EditText etNewItem = (EditText) findViewById(R.id.etText);
-        Intent data = new Intent();
-        data.putExtra("new_item", etNewItem.getText().toString());
-        setResult(RESULT_OK, data);
-        finish();
-    }
-
-    //TODO
-    public void delete(View view) {
-
     }
 
 }

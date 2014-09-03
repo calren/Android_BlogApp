@@ -32,6 +32,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String KEY_POST_VALUE = "post_value";
     private static final String KEY_POST_NUM = "post_num";
 
+
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -42,8 +43,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_DATE + " TEXT," + KEY_TITLE + " TEXT," +
                 KEY_SUMMARY + " TEXT" + ")";
 
-        String CREATE_ITEMS_TABLE = "CREATE TABLE " + TABLE_ITEMS + "("
-                + KEY_BLOG_POST_ID + " INTEGER PRIMARY KEY," + KEY_POST_TYPE + " TEXT,"
+        String CREATE_ITEMS_TABLE = "CREATE TABLE " + TABLE_ITEMS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_BLOG_POST_ID + " INTEGER KEY," + KEY_POST_TYPE + " TEXT,"
                 + KEY_POST_NUM + " TEXT," + KEY_POST_VALUE + " TEXT" + ")";
 
         db.execSQL(CREATE_POSTS_TABLE);
@@ -93,10 +94,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             do {
 
                 PostItem p = new PostItem();
-                p.setBlog_post_id(cursor.getLong(0));
-                p.setPost_type(cursor.getString(1));
-                p.setPost_num(cursor.getString(2));
-                p.setPost_value(cursor.getString(3));
+                p.setBlog_post_id(cursor.getLong(1));
+                p.setPost_type(cursor.getString(2));
+                p.setPost_num(cursor.getString(3));
+                p.setPost_value(cursor.getString(4));
 
                 items.add(p);
 
@@ -161,8 +162,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             do {
                 BlogPost bp = new BlogPost();
                 bp.set_id(Integer.parseInt(cursor.getString(0)));
-                bp.set_title(cursor.getString(1));
-                bp.set_date(cursor.getString(2));
+                bp.set_date(cursor.getString(1));
+                bp.set_title(cursor.getString(2));
                 bp.set_summary(cursor.getString(3));
 
                 posts.add(bp);

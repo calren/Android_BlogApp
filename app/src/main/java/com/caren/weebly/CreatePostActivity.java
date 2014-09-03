@@ -35,6 +35,8 @@ public class CreatePostActivity extends Activity {
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg"; //TODO
 
+    private boolean editing = false;
+
     ListView lvPostItems;
     PostItemAdapter adapterPosts;
     ArrayList<PostItem> aPostItems;
@@ -150,6 +152,7 @@ public class CreatePostActivity extends Activity {
 
         db.addBlogPostTitle(blog_post_id, title);
 
+        System.out.println("num of items to save: " + aPostItems.size());
         for (PostItem p : aPostItems) {
             db.addPostItem(p);
         }

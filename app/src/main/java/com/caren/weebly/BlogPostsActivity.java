@@ -4,14 +4,27 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 
 public class BlogPostsActivity extends Activity {
+
+    ArrayList<BlogPostItem> arrayOfPosts;
+    BlogPostAdapter bpAdapter;
+    ListView lvBlogPosts;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blog_posts);
+
+        arrayOfPosts = new ArrayList<BlogPostItem>();
+        bpAdapter = new BlogPostAdapter(this, arrayOfPosts);
+        lvBlogPosts = (ListView) findViewById(R.id.lvBlogPosts);
+        lvBlogPosts.setAdapter(bpAdapter);
     }
 
 
@@ -33,4 +46,10 @@ public class BlogPostsActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    //TODO
+    public void onCreateBlogPost() {
+
+    }
+
 }

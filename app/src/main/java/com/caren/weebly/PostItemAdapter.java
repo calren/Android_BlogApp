@@ -19,21 +19,18 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
         super(context, 0, items);
     }
 
-    // Returns the number of types of Views that will be created by getView(int, View, ViewGroup)
     @Override
     public int getViewTypeCount() {
         // text, image, or video
         return PostItem.PostItemValues.values().length;
     }
 
-    // Get the type of View that will be created by getView(int, View, ViewGroup) for the specified item.
     @Override
     public int getItemViewType(int position) {
         return getItem(position).value.ordinal();
 
     }
 
-    // Get a View that displays the data at the specified position in the data set.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
@@ -65,11 +62,9 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
 
         }
 
-        // Return the completed view to render on screen
         return convertView;
     }
 
-    // Given the item type, responsible for returning the correct inflated XML layout file
     private View getInflatedLayoutForType(int type) {
         if (type == PostItem.PostItemValues.TEXT.ordinal()) {
             return LayoutInflater.from(getContext()).inflate(R.layout.blog_post_item_text, null);

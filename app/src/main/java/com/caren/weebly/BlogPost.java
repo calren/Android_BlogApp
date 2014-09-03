@@ -1,5 +1,6 @@
 package com.caren.weebly;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,14 +8,22 @@ import java.util.List;
  */
 public class BlogPost {
     //private variables
-    int _id;
+    long _id;
     String _title;
     String _date;
     String _summary;
-    List<String[]> _items;
+    ArrayList<String> _items;
+
+    //items are either String text or URI of text
 
     public BlogPost() {
 
+    }
+
+    public BlogPost(String title, String summary, long id) {
+        this._title = title;
+        this._summary = summary;
+        this._id = id;
     }
 
     public BlogPost(String title, String date, String summary) {
@@ -23,14 +32,14 @@ public class BlogPost {
         this._summary = summary;
     }
 
-    public BlogPost(String title, String date, String summary, List<String[]> items) {
+    public BlogPost(String title, String date, String summary, ArrayList<String> items) {
         this._title = title;
         this._date = date;
         this._summary = summary;
         this._items = items;
     }
 
-    public int get_id() {
+    public long get_id() {
         return _id;
     }
 
@@ -62,11 +71,11 @@ public class BlogPost {
         this._summary = _summary;
     }
 
-    public List<String[]> get_items() {
+    public ArrayList<String> get_items() {
         return _items;
     }
 
-    public void set_items(List<String[]> _items) {
+    public void set_items(ArrayList<String> _items) {
         this._items = _items;
     }
 

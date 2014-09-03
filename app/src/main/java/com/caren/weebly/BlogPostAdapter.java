@@ -12,16 +12,16 @@ import java.util.ArrayList;
 /**
  * Created by Caren on 9/2/14.
  */
-public class BlogPostAdapter extends ArrayAdapter<BlogPostItem> {
+public class BlogPostAdapter extends ArrayAdapter<BlogPost> {
 
-    public BlogPostAdapter(Context context, ArrayList<BlogPostItem> users) {
-        super(context, R.layout.blog_post_item, users);
+    public BlogPostAdapter(Context context, ArrayList<BlogPost> posts) {
+        super(context, R.layout.blog_post_item, posts);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        BlogPostItem blogPost = getItem(position);
+        BlogPost blogPost = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.blog_post_item, parent, false);
@@ -29,8 +29,8 @@ public class BlogPostAdapter extends ArrayAdapter<BlogPostItem> {
 
         TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
         TextView tvSummary = (TextView) convertView.findViewById(R.id.tvSummary);
-        tvTitle.setText(blogPost.title);
-        tvSummary.setText(blogPost.summary);
+        tvTitle.setText(blogPost.get_title());
+        tvSummary.setText(blogPost.get_summary());
 
         return convertView;
     }

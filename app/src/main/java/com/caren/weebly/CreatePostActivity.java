@@ -56,6 +56,11 @@ public class CreatePostActivity extends Activity {
         adapterPosts = new PostItemAdapter(this, aPostItems);
         lvPostItems.setAdapter(adapterPosts);
 
+        if (getIntent().getLongExtra("blog_post_id", 0) != 0) {
+            BlogPost bp = db.getPost(getIntent().getLongExtra("blog_post_id", 0));
+            System.out.println(bp.get_title());
+        }
+
     }
 
     public void goToEditText(View view) {
@@ -127,12 +132,19 @@ public class CreatePostActivity extends Activity {
         String title = etTitle.getText().toString();
         String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 
-        BlogPost bp = new BlogPost(title, date, "This is a fake summary for now");
-        db.addPost(bp);
+        ArrayList<String> items = new ArrayList<String>() ;
+        for (int i = 0; i < aPostItems.size(); i++) {
+            items.add(aPostItems.get(i).label);
+        }
+
+        BlogPost bp = new BlogPost(title, date, "This is a fake summary for now", items);
+        System.out.println("items size: " + items.size());
+        long blogId = db.addPost(bp);
 
         Intent data = new Intent();
         data.putExtra("title", title);
         data.putExtra("summary", "This is a fake summary for now");
+        data.putExtra("id", blogId);
         setResult(RESULT_OK, data);
         finish();
     }

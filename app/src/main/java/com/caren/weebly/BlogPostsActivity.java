@@ -1,19 +1,27 @@
 package com.caren.weebly;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class BlogPostsActivity extends Activity {
 
-    ArrayList<BlogPostItem> arrayOfPosts;
+    ArrayList<BlogPostItem> aPosts;
     BlogPostAdapter bpAdapter;
     ListView lvBlogPosts;
+
+    DataBaseHandler db;
+
+    public final static int CREATE_POST_ACTIVITY_REQUEST_CODE = 5;
 
 
     @Override
@@ -21,10 +29,21 @@ public class BlogPostsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blog_posts);
 
-        arrayOfPosts = new ArrayList<BlogPostItem>();
-        bpAdapter = new BlogPostAdapter(this, arrayOfPosts);
+        aPosts = new ArrayList<BlogPostItem>();
+
+        db = new DataBaseHandler(this);
+
+        List<BlogPost> blogPosts = db.getAllPosts();
+
+        for (BlogPost bp : blogPosts) {
+            BlogPostItem blogToAdd = new BlogPostItem(bp.get_title(), bp.get_summary());
+            aPosts.add(blogToAdd);
+        }
+
+        bpAdapter = new BlogPostAdapter(this, aPosts);
         lvBlogPosts = (ListView) findViewById(R.id.lvBlogPosts);
         lvBlogPosts.setAdapter(bpAdapter);
+
     }
 
 
@@ -47,9 +66,21 @@ public class BlogPostsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    //TODO
-    public void onCreateBlogPost() {
+    public void onCreateBlogPost(View view) {
+        Intent i = new Intent(BlogPostsActivity.this, CreatePostActivity.class);
+        startActivityForResult(i, CREATE_POST_ACTIVITY_REQUEST_CODE);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        BlogPostItem blogPostItem;
+
+        if (requestCode == CREATE_POST_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            blogPostItem = new BlogPostItem(data.getExtras().getString("title"), data.getExtras().getString("summary"));
+            aPosts.add(blogPostItem);
+            bpAdapter.notifyDataSetChanged();
+
+        }
     }
 
 }

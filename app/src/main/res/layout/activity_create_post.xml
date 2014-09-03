@@ -25,7 +25,8 @@
         android:id="@+id/btnDone"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/etPostTitle"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:onClick="done"/>
 
     <ListView
         android:layout_width="fill_parent"

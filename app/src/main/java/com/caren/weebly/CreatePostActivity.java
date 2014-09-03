@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,26 +22,34 @@ import android.widget.Toast;
 import com.caren.weebly.R;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class CreatePostActivity extends Activity {
 
     private final int REQUEST_CODE = 20;
-    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public final static int WRITE_TEXT_ACTIVITY_REQUEST_CODE = 34;
     public final static int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 100;
+    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg"; //TODO
 
     ListView lvPostItems;
     PostItemAdapter adapterPosts;
     ArrayList<PostItem> aPostItems;
 
+    DataBaseHandler db;
+    EditText etTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
 
+        db = new DataBaseHandler(this);
+
         lvPostItems = (ListView) findViewById(R.id.lvPostItems);
+        etTitle = (EditText) findViewById(R.id.etPostTitle);
         aPostItems = new ArrayList<PostItem>();
 
         // Attach the adapter
@@ -69,8 +78,8 @@ public class CreatePostActivity extends Activity {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri(photoFileName)); // set the image file name
                     // Start the image capture intent to take photo
                     startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                }else if(which == 1){
-
+                }else {
+                    // TODO : choose from gallery
                 }
                 dialog.dismiss();
             }
@@ -112,8 +121,22 @@ public class CreatePostActivity extends Activity {
             aPostItems.add(postItem);
             adapterPosts.notifyDataSetChanged();
         }
-
     }
+
+    public void done(View view) {
+        String title = etTitle.getText().toString();
+        String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+
+        BlogPost bp = new BlogPost(title, date, "This is a fake summary for now");
+        db.addPost(bp);
+
+        Intent data = new Intent();
+        data.putExtra("title", title);
+        data.putExtra("summary", "This is a fake summary for now");
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

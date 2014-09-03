@@ -42,8 +42,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_DATE + " TEXT," + KEY_TITLE + " TEXT," +
                 KEY_SUMMARY + " TEXT" + ")";
 
-        System.out.println("DATATABLE BEING CREATED: " + CREATE_POSTS_TABLE);
-
         String CREATE_ITEMS_TABLE = "CREATE TABLE " + TABLE_ITEMS + "("
                 + KEY_BLOG_POST_ID + " INTEGER PRIMARY KEY," + KEY_POST_TYPE + " TEXT,"
                 + KEY_POST_NUM + " TEXT," + KEY_POST_VALUE + " TEXT" + ")";
@@ -79,6 +77,33 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
         return rowId;
 
+    }
+
+    /*
+    gets all post items associated to a particular blog
+     */
+    public ArrayList<PostItem> getAllItems(long blog_post_id) {
+        ArrayList<PostItem> items = new ArrayList<PostItem>();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_ITEMS + " WHERE blog_post_id = " + blog_post_id + " ORDER BY post_num ASC";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                PostItem p = new PostItem();
+                p.setBlog_post_id(cursor.getLong(0));
+                p.setPost_type(cursor.getString(1));
+                p.setPost_num(cursor.getString(2));
+                p.setPost_value(cursor.getString(3));
+
+                items.add(p);
+
+            } while (cursor.moveToNext());
+        }
+
+        return items;
     }
 
     public long addPost(BlogPost bp) {
@@ -139,8 +164,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 bp.set_title(cursor.getString(1));
                 bp.set_date(cursor.getString(2));
                 bp.set_summary(cursor.getString(3));
-
-                // TODO add items
 
                 posts.add(bp);
 

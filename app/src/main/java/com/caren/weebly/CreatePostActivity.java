@@ -43,6 +43,7 @@ public class CreatePostActivity extends Activity {
     EditText etTitle;
 
     long blog_post_id = -1;
+    int num_of_items = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,8 @@ public class CreatePostActivity extends Activity {
             String title = bp.get_title();
 
             etTitle.setText(title);
+
+            aPostItems = db.getAllItems(blog_post_id);
         }
 
         // Attach the adapter
@@ -116,22 +119,22 @@ public class CreatePostActivity extends Activity {
         PostItem postItem;
 
         // picture taken
-//        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-//            Uri takenPhotoUri = Utils.getPhotoFileUri(photoFileName);
-//            postItem = new PostItem(takenPhotoUri.toString(), PostItem.PostItemValues.IMAGE);
-//            aPostItems.add(postItem);
-//            adapterPosts.notifyDataSetChanged();
-//
-//        }
-//
-//        // text field entered
-//        if (resultCode == RESULT_OK && requestCode == WRITE_TEXT_ACTIVITY_REQUEST_CODE) {
-//            String text = data.getExtras().getString("new_item");
-//            postItem = new PostItem(text, PostItem.PostItemValues.TEXT);
-//            aPostItems.add(postItem);
-//            adapterPosts.notifyDataSetChanged();
-//        }
-//
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Uri takenPhotoUri = Utils.getPhotoFileUri(photoFileName);
+            postItem = new PostItem(blog_post_id, "IMAGE", takenPhotoUri.toString(), String.valueOf(num_of_items++));
+            aPostItems.add(postItem);
+            adapterPosts.notifyDataSetChanged();
+
+        }
+
+        // text field entered
+        if (resultCode == RESULT_OK && requestCode == WRITE_TEXT_ACTIVITY_REQUEST_CODE) {
+            String text = data.getExtras().getString("new_item");
+            postItem = new PostItem(blog_post_id, "TEXT", text, String.valueOf(num_of_items++));
+            aPostItems.add(postItem);
+            adapterPosts.notifyDataSetChanged();
+        }
+
 //        // video taken
 //        if (resultCode == RESULT_OK && requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
 //            //TODO
@@ -145,12 +148,11 @@ public class CreatePostActivity extends Activity {
     public void done(View view) {
         String title = etTitle.getText().toString();
 
-//        ArrayList<String> items = new ArrayList<String>() ;
-//        for (int i = 0; i < aPostItems.size(); i++) {
-//            items.add(aPostItems.get(i).label);
-//        }
-
         db.addBlogPostTitle(blog_post_id, title);
+
+        for (PostItem p : aPostItems) {
+            db.addPostItem(p);
+        }
 
         Intent data = new Intent();
         data.putExtra("title", title);

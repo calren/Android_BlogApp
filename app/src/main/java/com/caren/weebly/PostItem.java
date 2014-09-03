@@ -16,6 +16,10 @@ public class PostItem {
     // num in post (for ordering purposes)
     public String post_num;
 
+    public PostItem() {
+
+    }
+
     public PostItem(long id, String type, String value, String num) {
         super();
         this.blog_post_id = id;

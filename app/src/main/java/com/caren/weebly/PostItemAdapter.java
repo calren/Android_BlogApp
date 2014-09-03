@@ -27,7 +27,7 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).value.ordinal();
+        return getItem(position).getPost_type().ordinal();
 
     }
 
@@ -49,15 +49,15 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
         switch (type) {
             case 0:
                 TextView tvText = (TextView) convertView.findViewById(R.id.textView);
-                tvText.setText(item.label);
+                tvText.setText(item.getPost_value());
                 break;
             case 1:
                 ImageView ivImage = (ImageView) convertView.findViewById(R.id.imageView);
-                ivImage.setImageURI(Uri.parse(item.label));
+                ivImage.setImageURI(Uri.parse(item.getPost_value()));
                 break;
             case 2:
                 VideoView vvVideo = (VideoView) convertView.findViewById(R.id.videoView);
-                vvVideo.setVideoURI(Uri.parse(item.label));
+                vvVideo.setVideoURI(Uri.parse(item.getPost_value()));
                 break;
 
         }

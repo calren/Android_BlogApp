@@ -42,6 +42,8 @@ public class CreatePostActivity extends Activity {
     DataBaseHandler db;
     EditText etTitle;
 
+    long blog_post_id = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,19 +56,24 @@ public class CreatePostActivity extends Activity {
         aPostItems = new ArrayList<PostItem>();
 
         if (getIntent().getLongExtra("blog_post_id", 0) != 0) {
-            BlogPost bp = db.getPost(getIntent().getLongExtra("blog_post_id", 0));
+            blog_post_id = getIntent().getLongExtra("blog_post_id", 0);
+            BlogPost bp = db.getPost(blog_post_id);
 
             String title = bp.get_title();
-            ArrayList<String> items = bp.get_items();
 
             etTitle.setText(title);
-
-            System.out.println(bp.get_title());
         }
 
         // Attach the adapter
         adapterPosts = new PostItemAdapter(this, aPostItems);
         lvPostItems.setAdapter(adapterPosts);
+
+        // create a blog post entry in the data table if this is new
+        if (blog_post_id < 0) {
+            String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+            BlogPost bp = new BlogPost(date);
+            blog_post_id = db.addPost(bp);
+        }
 
     }
 
@@ -109,49 +116,46 @@ public class CreatePostActivity extends Activity {
         PostItem postItem;
 
         // picture taken
-        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Uri takenPhotoUri = Utils.getPhotoFileUri(photoFileName);
-            postItem = new PostItem(takenPhotoUri.toString(), PostItem.PostItemValues.IMAGE);
-            aPostItems.add(postItem);
-            adapterPosts.notifyDataSetChanged();
-
-        }
-
-        // text field entered
-        if (resultCode == RESULT_OK && requestCode == WRITE_TEXT_ACTIVITY_REQUEST_CODE) {
-            String text = data.getExtras().getString("new_item");
-            postItem = new PostItem(text, PostItem.PostItemValues.TEXT);
-            aPostItems.add(postItem);
-            adapterPosts.notifyDataSetChanged();
-        }
-
-        // video taken
-        if (resultCode == RESULT_OK && requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
-            //TODO
-            Uri takenVideoUri = Utils.getPhotoFileUri(photoFileName);
-            postItem = new PostItem(takenVideoUri.toString(), PostItem.PostItemValues.VIDEO);
-            aPostItems.add(postItem);
-            adapterPosts.notifyDataSetChanged();
-        }
+//        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+//            Uri takenPhotoUri = Utils.getPhotoFileUri(photoFileName);
+//            postItem = new PostItem(takenPhotoUri.toString(), PostItem.PostItemValues.IMAGE);
+//            aPostItems.add(postItem);
+//            adapterPosts.notifyDataSetChanged();
+//
+//        }
+//
+//        // text field entered
+//        if (resultCode == RESULT_OK && requestCode == WRITE_TEXT_ACTIVITY_REQUEST_CODE) {
+//            String text = data.getExtras().getString("new_item");
+//            postItem = new PostItem(text, PostItem.PostItemValues.TEXT);
+//            aPostItems.add(postItem);
+//            adapterPosts.notifyDataSetChanged();
+//        }
+//
+//        // video taken
+//        if (resultCode == RESULT_OK && requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
+//            //TODO
+//            Uri takenVideoUri = Utils.getPhotoFileUri(photoFileName);
+//            postItem = new PostItem(takenVideoUri.toString(), PostItem.PostItemValues.VIDEO);
+//            aPostItems.add(postItem);
+//            adapterPosts.notifyDataSetChanged();
+//        }
     }
 
     public void done(View view) {
         String title = etTitle.getText().toString();
-        String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 
-        ArrayList<String> items = new ArrayList<String>() ;
-        for (int i = 0; i < aPostItems.size(); i++) {
-            items.add(aPostItems.get(i).label);
-        }
+//        ArrayList<String> items = new ArrayList<String>() ;
+//        for (int i = 0; i < aPostItems.size(); i++) {
+//            items.add(aPostItems.get(i).label);
+//        }
 
-        BlogPost bp = new BlogPost(title, date, "This is a fake summary for now", items);
-        System.out.println("items size: " + items.size());
-        long blogId = db.addPost(bp);
+        db.addBlogPostTitle(blog_post_id, title);
 
         Intent data = new Intent();
         data.putExtra("title", title);
         data.putExtra("summary", "This is a fake summary for now");
-        data.putExtra("id", blogId);
+        data.putExtra("id", blog_post_id);
         setResult(RESULT_OK, data);
         finish();
     }

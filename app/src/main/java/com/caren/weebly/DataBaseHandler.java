@@ -17,24 +17,20 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "blog_post_manager";
 
     private static final String TABLE_BLOGPOSTS = "blog_posts";
+    private static final String TABLE_ITEMS = "blog_items";
 
-    // Table Columns names
+    // Blog post Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_TITLE = "title";
     private static final String KEY_DATE = "date";
     private static final String KEY_SUMMARY = "summary";
-    private static final String KEY_NUMOFITEMS = "num_of_items";
-    private static final String KEY_ITEM1 = "item1";
-    private static final String KEY_ITEM2 = "item2";
-    private static final String KEY_ITEM3 = "item3";
-    private static final String KEY_ITEM4 = "item4";
-    private static final String KEY_ITEM5 = "item5";
-    private static final String KEY_ITEM6 = "item6";
-    private static final String KEY_ITEM7 = "item7";
-    private static final String KEY_ITEM8 = "item8";
-    private static final String KEY_ITEM9 = "item9";
-    private static final String KEY_ITEM10 = "item10";
 
+    // Blog post items table columns
+    private static final String KEY_NUMOFITEMS = "num_of_items";
+    private static final String KEY_BLOG_POST_ID = "blog_post_id";
+    private static final String KEY_POST_TYPE = "post_type";
+    private static final String KEY_POST_VALUE = "post_value";
+    private static final String KEY_POST_NUM = "post_num";
 
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,20 +38,26 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_BLOGPOSTS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_TITLE + " TEXT,"
-                + KEY_DATE + " TEXT," + KEY_SUMMARY + " TEXT," + KEY_NUMOFITEMS + " TEXT," + KEY_ITEM1 + " TEXT," +
-                KEY_ITEM2 + " TEXT,"+ KEY_ITEM3 + " TEXT," + KEY_ITEM4 + " TEXT," +
-                KEY_ITEM5 + " TEXT" + KEY_ITEM6 + " TEXT," + KEY_ITEM7 + " TEXT,"+ KEY_ITEM8 + " TEXT,"
-                + KEY_ITEM9 + " TEXT," + KEY_ITEM10 + " TEXT" + ")";
-        System.out.println("creating database table: " + CREATE_CONTACTS_TABLE);
-        db.execSQL(CREATE_CONTACTS_TABLE);
+        String CREATE_POSTS_TABLE = "CREATE TABLE " + TABLE_BLOGPOSTS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_DATE + " TEXT," + KEY_TITLE + " TEXT," +
+                KEY_SUMMARY + " TEXT" + ")";
+
+        System.out.println("DATATABLE BEING CREATED: " + CREATE_POSTS_TABLE);
+
+        String CREATE_ITEMS_TABLE = "CREATE TABLE " + TABLE_ITEMS + "("
+                + KEY_BLOG_POST_ID + " INTEGER PRIMARY KEY," + KEY_POST_TYPE + " TEXT,"
+                + KEY_POST_NUM + " TEXT," + KEY_POST_VALUE + " TEXT" + ")";
+
+        db.execSQL(CREATE_POSTS_TABLE);
+        db.execSQL(CREATE_ITEMS_TABLE);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BLOGPOSTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMS);
 
         onCreate(db);
     }
@@ -64,30 +66,47 @@ public class DataBaseHandler extends SQLiteOpenHelper {
      * All CRUD(Create, Read, Update, Delete) Operations
      */
 
+    public long addPostItem(PostItem p) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_BLOG_POST_ID, p.getBlog_post_id());
+        values.put(KEY_POST_TYPE, p.getPost_type().toString());
+        values.put(KEY_POST_VALUE, p.getPost_value());
+        values.put(KEY_POST_NUM, p.getPost_num());
+
+        long rowId = db.insert(TABLE_ITEMS, null, values);
+        db.close();
+        return rowId;
+
+    }
+
     public long addPost(BlogPost bp) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_TITLE, bp.get_title());
         values.put(KEY_DATE, bp.get_date());
-        values.put(KEY_SUMMARY, bp.get_summary());
-
-        try {
-            ArrayList<String> items = bp.get_items();
-            values.put(KEY_NUMOFITEMS, items.size());
-
-            for (int i = 1; 1 <= items.size(); i++) {
-                values.put("item" + i, items.get(i-1));
-            }
-        } catch (Exception e) {
-            // no items were in blog post
-        }
 
         // Inserting Row
         long rowId = db.insert(TABLE_BLOGPOSTS, null, values);
         db.close();
         return rowId;
     }
+
+    public void addBlogPostTitle(long bpID, String title) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_TITLE, title);
+
+        db.update(TABLE_BLOGPOSTS, cv, "id "+"="+bpID, null);
+        db.close();
+    }
+
+    public void addBlogPostSummary(long bpID, String summary) {
+
+    }
+
 
     public BlogPost getPost(long id) {
         String selectQuery = "SELECT  * FROM " + TABLE_BLOGPOSTS + " WHERE id = " + id;
@@ -97,20 +116,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
-            bp.set_title(cursor.getString(1));
-            bp.set_date(cursor.getString(2));
+            bp.set_date(cursor.getString(1));
+            bp.set_title(cursor.getString(2));
             bp.set_summary(cursor.getString(3));
-
-            // add blog post items
-            int numOfItems = Integer.parseInt(cursor.getString(4));
-            ArrayList<String> items = new ArrayList<String>();
-
-            for (int i = 5; i <= numOfItems + 4; i++) {
-                items.add(cursor.getString(i));
-            }
-
-            bp.set_items(items);
-
         }
 
         return bp;

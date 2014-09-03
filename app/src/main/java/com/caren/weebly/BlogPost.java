@@ -25,6 +25,10 @@ public class BlogPost {
         this._id = id;
     }
 
+    public BlogPost(String date) {
+        this._date = date;
+    }
+
     public BlogPost(String title, String summary, long id) {
         this._title = title;
         this._summary = summary;

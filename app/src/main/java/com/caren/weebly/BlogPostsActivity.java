@@ -49,6 +49,8 @@ public class BlogPostsActivity extends Activity {
     }
 
     private void setupListViewListener() {
+
+        // remove with long click?
 //        lvItems.setOnItemLongClickListener(new OnItemLongClickListener() {
 //            @Override
 //            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long rowId) {
@@ -59,6 +61,8 @@ public class BlogPostsActivity extends Activity {
 //                return true;
 //            }
 //        });
+
+        // go into edit mode
         lvBlogPosts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -70,26 +74,6 @@ public class BlogPostsActivity extends Activity {
 
             }
         });
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.blog_posts, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public void onCreateBlogPost(View view) {
@@ -107,6 +91,21 @@ public class BlogPostsActivity extends Activity {
             bpAdapter.notifyDataSetChanged();
 
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.blog_posts, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

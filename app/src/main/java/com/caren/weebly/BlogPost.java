@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class BlogPost {
     //private variables
+
     long _id;
     String _title;
     String _date;
@@ -18,6 +19,10 @@ public class BlogPost {
 
     public BlogPost() {
 
+    }
+
+    public BlogPost(long id) {
+        this._id = id;
     }
 
     public BlogPost(String title, String summary, long id) {

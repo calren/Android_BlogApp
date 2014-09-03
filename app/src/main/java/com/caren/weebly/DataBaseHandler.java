@@ -23,27 +23,31 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String KEY_TITLE = "title";
     private static final String KEY_DATE = "date";
     private static final String KEY_SUMMARY = "summary";
-    private static final String KEY_ITEMS = "items";
-
     private static final String KEY_NUMOFITEMS = "num_of_items";
     private static final String KEY_ITEM1 = "item1";
     private static final String KEY_ITEM2 = "item2";
     private static final String KEY_ITEM3 = "item3";
     private static final String KEY_ITEM4 = "item4";
     private static final String KEY_ITEM5 = "item5";
+    private static final String KEY_ITEM6 = "item6";
+    private static final String KEY_ITEM7 = "item7";
+    private static final String KEY_ITEM8 = "item8";
+    private static final String KEY_ITEM9 = "item9";
+    private static final String KEY_ITEM10 = "item10";
+
 
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_BLOGPOSTS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_TITLE + " TEXT,"
                 + KEY_DATE + " TEXT," + KEY_SUMMARY + " TEXT," + KEY_NUMOFITEMS + " TEXT," + KEY_ITEM1 + " TEXT," +
                 KEY_ITEM2 + " TEXT,"+ KEY_ITEM3 + " TEXT," + KEY_ITEM4 + " TEXT," +
-                KEY_ITEM5 + " TEXT" + ")";
+                KEY_ITEM5 + " TEXT" + KEY_ITEM6 + " TEXT," + KEY_ITEM7 + " TEXT,"+ KEY_ITEM8 + " TEXT,"
+                + KEY_ITEM9 + " TEXT," + KEY_ITEM10 + " TEXT" + ")";
         System.out.println("creating database table: " + CREATE_CONTACTS_TABLE);
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
@@ -60,7 +64,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
      * All CRUD(Create, Read, Update, Delete) Operations
      */
 
-    // Add blog post
     public long addPost(BlogPost bp) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -79,7 +82,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         } catch (Exception e) {
             // no items were in blog post
         }
-
 
         // Inserting Row
         long rowId = db.insert(TABLE_BLOGPOSTS, null, values);

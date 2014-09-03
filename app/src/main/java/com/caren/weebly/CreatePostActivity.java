@@ -25,6 +25,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class CreatePostActivity extends Activity {
 
@@ -52,14 +53,20 @@ public class CreatePostActivity extends Activity {
         etTitle = (EditText) findViewById(R.id.etPostTitle);
         aPostItems = new ArrayList<PostItem>();
 
+        if (getIntent().getLongExtra("blog_post_id", 0) != 0) {
+            BlogPost bp = db.getPost(getIntent().getLongExtra("blog_post_id", 0));
+
+            String title = bp.get_title();
+            ArrayList<String> items = bp.get_items();
+
+            etTitle.setText(title);
+
+            System.out.println(bp.get_title());
+        }
+
         // Attach the adapter
         adapterPosts = new PostItemAdapter(this, aPostItems);
         lvPostItems.setAdapter(adapterPosts);
-
-        if (getIntent().getLongExtra("blog_post_id", 0) != 0) {
-            BlogPost bp = db.getPost(getIntent().getLongExtra("blog_post_id", 0));
-            System.out.println(bp.get_title());
-        }
 
     }
 

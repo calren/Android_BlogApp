@@ -21,6 +21,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.caren.weebly.R;
+import com.mobeta.android.dslv.DragSortController;
+import com.mobeta.android.dslv.DragSortListView;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -42,7 +44,7 @@ public class CreatePostActivity extends Activity {
 
     private boolean editing = false;
 
-    ListView lvPostItems;
+    DragSortListView lvPostItems;
     PostItemAdapter adapterPosts;
     ArrayList<PostItem> aPostItems;
 
@@ -60,7 +62,8 @@ public class CreatePostActivity extends Activity {
 
         db = new DataBaseHandler(this);
 
-        lvPostItems = (ListView) findViewById(R.id.lvPostItems);
+        lvPostItems = (DragSortListView) findViewById(R.id.lvPostItems);
+        lvPostItems.setDragEnabled(true);
         etTitle = (EditText) findViewById(R.id.etPostTitle);
         aPostItems = new ArrayList<PostItem>();
 
@@ -76,6 +79,21 @@ public class CreatePostActivity extends Activity {
             aPostItems = db.getAllItems(blog_post_id);
         }
 
+
+        lvPostItems.setAdapter(adapterPosts);
+        lvPostItems.setDropListener(onDrop);
+        lvPostItems.setRemoveListener(onRemove);
+
+        DragSortController controller = new DragSortController(lvPostItems);
+        controller.setRemoveEnabled(false);
+        controller.setSortEnabled(true);
+        controller.setDragInitMode(1);
+
+        lvPostItems.setFloatViewManager(controller);
+        lvPostItems.setOnTouchListener(controller);
+        lvPostItems.setDragEnabled(true);
+
+
         // Attach the adapter
         adapterPosts = new PostItemAdapter(this, aPostItems);
         lvPostItems.setAdapter(adapterPosts);
@@ -89,6 +107,29 @@ public class CreatePostActivity extends Activity {
 
         setupListViewListener();
     }
+
+    private DragSortListView.DropListener onDrop = new DragSortListView.DropListener()
+    {
+        @Override
+        public void drop(int from, int to)
+        {
+            if (from != to)
+            {
+                PostItem item = adapterPosts.getItem(from);
+                adapterPosts.remove(item);
+                adapterPosts.insert(item, to);
+            }
+        }
+    };
+
+    private DragSortListView.RemoveListener onRemove = new DragSortListView.RemoveListener()
+    {
+        @Override
+        public void remove(int which)
+        {
+            adapterPosts.remove(adapterPosts.getItem(which));
+        }
+    };
 
     public void goToEditText(View view) {
         Intent i = new Intent(CreatePostActivity.this, EditTextActivity.class);

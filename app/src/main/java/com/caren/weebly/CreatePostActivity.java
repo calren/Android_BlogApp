@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -59,6 +60,7 @@ public class CreatePostActivity extends Activity {
         aPostItems = new ArrayList<PostItem>();
 
         if (getIntent().getLongExtra("blog_post_id", 0) != 0) {
+            editing = true;
             blog_post_id = getIntent().getLongExtra("blog_post_id", 0);
             BlogPost bp = db.getPost(blog_post_id);
 
@@ -80,6 +82,7 @@ public class CreatePostActivity extends Activity {
             blog_post_id = db.addPost(bp);
         }
 
+        setupListViewListener();
     }
 
     public void goToEditText(View view) {
@@ -148,21 +151,77 @@ public class CreatePostActivity extends Activity {
     }
 
     public void done(View view) {
+        Intent data = new Intent();
         String title = etTitle.getText().toString();
 
         db.addBlogPostTitle(blog_post_id, title);
 
-        System.out.println("num of items to save: " + aPostItems.size());
-        for (PostItem p : aPostItems) {
-            db.addPostItem(p);
+        if (!editing) {
+            for (PostItem p : aPostItems) {
+                db.addPostItem(p);
+            }
+
+            data.putExtra("title", title);
+            data.putExtra("summary", "This is a fake summary for now");
+            data.putExtra("id", blog_post_id);
+
+        } else {
+            db.deleteAllItems(blog_post_id);
+            for (PostItem p : aPostItems) {
+                db.addPostItem(p);
+            }
+
+
+            // TODO pass back title if title changed
+
         }
 
-        Intent data = new Intent();
-        data.putExtra("title", title);
-        data.putExtra("summary", "This is a fake summary for now");
-        data.putExtra("id", blog_post_id);
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    private void setupListViewListener() {
+
+        // remove with long click?
+//        lvItems.setOnItemLongClickListener(new OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long rowId) {
+//                items.remove(position);
+//                preSorted.remove(((TextView)view).getText());
+//                itemsAdapter.notifyDataSetChanged();
+//                saveItems();
+//                return true;
+//            }
+//        });
+
+        // edit or delete
+        lvPostItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                //TODO: determine what kind of item it is (text, video, image)
+                AlertDialog.Builder alert_options = new AlertDialog.Builder(CreatePostActivity.this);
+                alert_options.setTitle("Select:");
+                final CharSequence[] opsChars = {"Edit", "Delete"};
+                alert_options.setItems(opsChars, new android.content.DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == 0){
+
+                        } else {
+                           // delete
+                            aPostItems.remove(position);
+                            adapterPosts.notifyDataSetChanged();
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+                alert_options.show();
+
+            }
+        });
     }
 
 

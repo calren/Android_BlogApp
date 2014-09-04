@@ -77,7 +77,19 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         long rowId = db.insert(TABLE_ITEMS, null, values);
         db.close();
         return rowId;
+    }
 
+    /**
+     * deletes all post items associated with the blog_post_id
+     */
+    public void deleteAllItems(long blog_post_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        //DELETE FROM Books2 WHERE Id=1;
+        db.delete(TABLE_ITEMS, "blog_post_id=" + blog_post_id, null );
+        db.close();
     }
 
     /*

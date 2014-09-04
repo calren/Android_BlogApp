@@ -23,6 +23,7 @@ public class BlogPostsActivity extends Activity {
     DataBaseHandler db;
 
     public final static int CREATE_POST_ACTIVITY_REQUEST_CODE = 5;
+    public final static int EDIT_POST_ACTIVITY_REQUEST_CODE = 10;
 
 
     @Override
@@ -70,7 +71,7 @@ public class BlogPostsActivity extends Activity {
 
                 Intent i = new Intent(BlogPostsActivity.this, CreatePostActivity.class);
                 i.putExtra("blog_post_id", aPosts.get(position).get_id());
-                startActivityForResult(i, CREATE_POST_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(i, EDIT_POST_ACTIVITY_REQUEST_CODE);
 
             }
         });

@@ -32,6 +32,7 @@ public class CreatePostActivity extends Activity {
 
     private final int REQUEST_CODE = 20;
     public final static int WRITE_TEXT_ACTIVITY_REQUEST_CODE = 34;
+    public final static int EDIT_TEXT_ACTIVITY_REQUEST_CODE = 35;
     public final static int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 100;
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg"; //TODO
@@ -140,6 +141,14 @@ public class CreatePostActivity extends Activity {
             adapterPosts.notifyDataSetChanged();
         }
 
+        // text field entered
+        if (resultCode == RESULT_OK && requestCode == EDIT_TEXT_ACTIVITY_REQUEST_CODE) {
+            String text = data.getExtras().getString("new_item");
+            int position = data.getExtras().getInt("position");
+            aPostItems.get(position).setPost_value(text);
+            adapterPosts.notifyDataSetChanged();
+        }
+
 //        // video taken
 //        if (resultCode == RESULT_OK && requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
 //            //TODO
@@ -199,18 +208,29 @@ public class CreatePostActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                //TODO: determine what kind of item it is (text, video, image)
+                final PostItem.PostItemValues type = aPostItems.get(position).getPost_type();
+
                 AlertDialog.Builder alert_options = new AlertDialog.Builder(CreatePostActivity.this);
-                alert_options.setTitle("Select:");
+                alert_options.setTitle("What would you like to do?");
                 final CharSequence[] opsChars = {"Edit", "Delete"};
-                alert_options.setItems(opsChars, new android.content.DialogInterface.OnClickListener(){
+                alert_options.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(which == 0){
+                        if (which == 0) {
+                            switch (type) {
+                                case TEXT:
+                                    Intent i = new Intent(CreatePostActivity.this, EditTextActivity.class);
+                                    i.putExtra("position", position);
+                                    i.putExtra("old_text", aPostItems.get(position).getPost_value());
+                                    startActivityForResult(i, EDIT_TEXT_ACTIVITY_REQUEST_CODE);
+
+                            }
+
+//                            aPostItems.set()
 
                         } else {
-                           // delete
+                            // delete
                             aPostItems.remove(position);
                             adapterPosts.notifyDataSetChanged();
                         }

@@ -253,20 +253,24 @@ public class CreatePostActivity extends Activity {
 
         createSummary();
 
-        if (!editing) {
-            for (PostItem p : aPostItems) {
-                db.addPostItem(p);
-            }
-
-        } else {
+        if (editing) {
             db.deleteAllItems(blog_post_id);
-            for (PostItem p : aPostItems) {
-                db.addPostItem(p);
-            }
         }
+
+        saveAllPostItems();
 
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    public void saveAllPostItems() {
+        int lastPositionSeen = 0;
+
+        for (PostItem p : aPostItems) {
+            p.setPost_num(Integer.toString(lastPositionSeen));
+            db.addPostItem(p);
+            lastPositionSeen++;
+        }
     }
 
     // create a summary for the post based on the first item

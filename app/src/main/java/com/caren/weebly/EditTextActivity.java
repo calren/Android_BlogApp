@@ -31,7 +31,7 @@ public class EditTextActivity extends Activity {
 
     }
 
-    public void finishEditText(View view) {
+    public void finishEditText() {
         Intent data = new Intent();
         data.putExtra("new_item", etNewItem.getText().toString());
         if (position >=0) {
@@ -39,6 +39,21 @@ public class EditTextActivity extends Activity {
         }
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_text, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            finishEditText();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

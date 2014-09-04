@@ -4,11 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -16,15 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Toast;
-
 import com.caren.weebly.R;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -108,13 +100,10 @@ public class CreatePostActivity extends Activity {
         setupListViewListener();
     }
 
-    private DragSortListView.DropListener onDrop = new DragSortListView.DropListener()
-    {
+    private DragSortListView.DropListener onDrop = new DragSortListView.DropListener() {
         @Override
-        public void drop(int from, int to)
-        {
-            if (from != to)
-            {
+        public void drop(int from, int to) {
+            if (from != to) {
                 PostItem item = adapterPosts.getItem(from);
                 adapterPosts.remove(item);
                 adapterPosts.insert(item, to);
@@ -122,11 +111,9 @@ public class CreatePostActivity extends Activity {
         }
     };
 
-    private DragSortListView.RemoveListener onRemove = new DragSortListView.RemoveListener()
-    {
+    private DragSortListView.RemoveListener onRemove = new DragSortListView.RemoveListener() {
         @Override
-        public void remove(int which)
-        {
+        public void remove(int which) {
             adapterPosts.remove(adapterPosts.getItem(which));
         }
     };
@@ -245,7 +232,7 @@ public class CreatePostActivity extends Activity {
         }
     }
 
-    public void done(View view) {
+    public void done() {
         Intent data = new Intent();
         String title = etTitle.getText().toString();
 
@@ -357,19 +344,15 @@ public class CreatePostActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.create_post, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            return true;
+            done();
         }
         return super.onOptionsItemSelected(item);
     }

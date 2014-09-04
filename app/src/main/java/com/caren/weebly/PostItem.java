@@ -61,6 +61,7 @@ public class PostItem {
     }
 
     public PostItemValues getPostItemType(String s) {
+
         if (s.equals("TEXT")) {
             return PostItemValues.TEXT;
         } else if (s.equals("VIDEO")) {

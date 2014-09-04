@@ -9,7 +9,6 @@ import java.io.File;
 public class Utils {
     public static String APP_TAG = "Weebly";
 
-
     // Returns the Uri for a photo stored on disk given the fileName
     public static Uri getPhotoFileUri(String fileName) {
         // Get safe storage directory for photos

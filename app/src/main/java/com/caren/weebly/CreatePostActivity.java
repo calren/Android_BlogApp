@@ -210,18 +210,7 @@ public class CreatePostActivity extends Activity {
 
         db.addBlogPostTitle(blog_post_id, title);
 
-        // create a summary for the post based on the first item
-        try {
-            String summary = aPostItems.get(0).getPost_value();
-            if (summary.contains("://")) {
-                summary = "<Media Item>" + summary;
-            }
-
-            summary = summary.substring(0, Math.min(summary.length(), 50));
-            db.addBlogPostSummary(blog_post_id, summary);
-        } catch (Exception e) {
-            // there were no items in the post, therefore can't create a summary
-        }
+        createSummary();
 
         if (!editing) {
             for (PostItem p : aPostItems) {
@@ -237,6 +226,22 @@ public class CreatePostActivity extends Activity {
 
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    // create a summary for the post based on the first item
+    public void createSummary() {
+        String summary = "";
+
+        if (aPostItems.size() > 0) {
+            summary = aPostItems.get(0).getPost_value();
+        }
+
+        if (summary.contains("://")) {
+            summary = "<Media Item>" + summary;
+        }
+
+        summary = summary.substring(0, Math.min(summary.length(), 50));
+        db.addBlogPostSummary(blog_post_id, summary);
     }
 
     private void setupListViewListener() {

@@ -35,7 +35,8 @@ public class CreatePostActivity extends Activity {
     public final static int EDIT_TEXT_ACTIVITY_REQUEST_CODE = 35;
     public final static int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 100;
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public final static int EDIT_IMAGE_ACTIVITY_REQUEST_CODE = 1035;
+    public final static int PICK_PHOTO_ACTIVITY_REQUEST_CODE = 1035;
+    public final static int EDIT_IMAGE_ACTIVITY_REQUEST_CODE = 1036;
     public String photoFileName = "photo.jpg"; //TODO
     public String photoFileNameChanged = "blah.jpg";
 
@@ -110,7 +111,8 @@ public class CreatePostActivity extends Activity {
                     // Start the image capture intent to take photo
                     startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                 }else {
-                    // TODO : choose from gallery
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, PICK_PHOTO_ACTIVITY_REQUEST_CODE);
                 }
                 dialog.dismiss();
             }
@@ -120,6 +122,27 @@ public class CreatePostActivity extends Activity {
     }
 
     public void addVideo (View view) {
+        AlertDialog.Builder getVideoFrom = new AlertDialog.Builder(CreatePostActivity.this);
+        getVideoFrom.setTitle("Select:");
+        final CharSequence[] opsChars = {"Take a video", "Open Gallery"};
+        getVideoFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(which == 0){
+                    Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(takeVideoIntent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+                    }
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, PICK_PHOTO_ACTIVITY_REQUEST_CODE);
+                }
+                dialog.dismiss();
+            }
+        });
+
+        getVideoFrom.show();
 
     }
 
@@ -136,7 +159,17 @@ public class CreatePostActivity extends Activity {
 
         }
 
-        // picture changed
+        // picture chosen
+        if (requestCode == PICK_PHOTO_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (data != null) {
+                Uri photoUri = data.getData();
+                postItem = new PostItem(blog_post_id, "IMAGE", photoUri.toString(), String.valueOf(num_of_items++));
+                aPostItems.add(postItem);
+                adapterPosts.notifyDataSetChanged();
+            }
+        }
+
+            // picture changed
         if (requestCode == EDIT_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri takenPhotoUri = Utils.getPhotoFileUri(photoFileNameChanged);
             aPostItems.get(lastPositionEdit).setPost_value(takenPhotoUri.toString());
@@ -160,14 +193,15 @@ public class CreatePostActivity extends Activity {
             adapterPosts.notifyDataSetChanged();
         }
 
-//        // video taken
-//        if (resultCode == RESULT_OK && requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
-//            //TODO
-//            Uri takenVideoUri = Utils.getPhotoFileUri(photoFileName);
-//            postItem = new PostItem(takenVideoUri.toString(), PostItem.PostItemValues.VIDEO);
-//            aPostItems.add(postItem);
-//            adapterPosts.notifyDataSetChanged();
-//        }
+        // video taken
+        if (resultCode == RESULT_OK && requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
+            if (data != null) {
+                Uri videoUri = data.getData();
+                postItem = new PostItem(blog_post_id, "VIDEO", videoUri.toString(), String.valueOf(num_of_items++));
+                aPostItems.add(postItem);
+                adapterPosts.notifyDataSetChanged();
+            }
+        }
     }
 
     public void done(View view) {
@@ -239,10 +273,10 @@ public class CreatePostActivity extends Activity {
                                                 // Start the image capture intent to take photo
 
                                                 startActivityForResult(intent, EDIT_IMAGE_ACTIVITY_REQUEST_CODE);
-                                            }else {
-                                                // TODO : choose from gallery
+                                            } else {
+                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                                startActivityForResult(intent, PICK_PHOTO_ACTIVITY_REQUEST_CODE);
                                             }
-                                            dialog.dismiss();
                                         }
                                     });
 

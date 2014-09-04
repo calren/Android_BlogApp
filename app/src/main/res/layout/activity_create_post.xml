@@ -96,7 +96,8 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:layout_weight="1"
-            android:id="@+id/llVideo">
+            android:id="@+id/llVideo"
+            android:onClick="addVideo">
 
             <TextView
                 android:layout_width="fill_parent"

@@ -1,12 +1,18 @@
 package com.caren.weebly;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.opengl.Matrix;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -52,12 +58,13 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
                 tvText.setText(item.getPost_value());
                 break;
             case 1:
-                ImageView ivImage = (ImageView) convertView.findViewById(R.id.imageView);
-                ivImage.setImageURI(Uri.parse(item.getPost_value()));
+                ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
+                imageView.setImageURI(Uri.parse(item.getPost_value()));
                 break;
             case 2:
-                VideoView vvVideo = (VideoView) convertView.findViewById(R.id.videoView);
+                final VideoView vvVideo = (VideoView) convertView.findViewById(R.id.video_view);
                 vvVideo.setVideoURI(Uri.parse(item.getPost_value()));
+                vvVideo.setMediaController(new MediaController(this.getContext()));
                 break;
 
         }

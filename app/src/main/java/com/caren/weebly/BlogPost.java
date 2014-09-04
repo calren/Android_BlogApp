@@ -1,11 +1,7 @@
 package com.caren.weebly;
 
 import java.util.ArrayList;
-import java.util.List;
 
-/**
- * Created by Caren on 9/2/14.
- */
 public class BlogPost {
     //private variables
 
@@ -14,8 +10,6 @@ public class BlogPost {
     String _date;
     String _summary;
     ArrayList<String> _items;
-
-    //items are either String text or URI of text
 
     public BlogPost() {
 

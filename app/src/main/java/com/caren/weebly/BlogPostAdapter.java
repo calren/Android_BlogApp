@@ -9,9 +9,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by Caren on 9/2/14.
- */
 public class BlogPostAdapter extends ArrayAdapter<BlogPost> {
 
     public BlogPostAdapter(Context context, ArrayList<BlogPost> posts) {
@@ -22,7 +19,6 @@ public class BlogPostAdapter extends ArrayAdapter<BlogPost> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         BlogPost blogPost = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.blog_post_item, parent, false);
         }

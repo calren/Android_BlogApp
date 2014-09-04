@@ -45,7 +45,8 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout"
+        android:background="#787878">
 
         <LinearLayout
             android:layout_height="match_parent"
@@ -60,8 +61,14 @@
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="TEXT"
+                android:textColor="#FFF"
                 />
         </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#000000"/>
 
         <LinearLayout
             android:layout_height="match_parent"
@@ -76,8 +83,14 @@
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="IMAGE"
-                android:onClick="goToEditImage"/>
+                android:onClick="goToEditImage"
+                android:textColor="#FFF"/>
         </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#000000"/>
 
         <LinearLayout
             android:layout_height="match_parent"
@@ -91,7 +104,8 @@
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="VIDEO"
-                android:onClick="goToEditVideo"/>
+                android:onClick="goToEditVideo"
+                android:textColor="#FFF"/>
         </LinearLayout>
 
 

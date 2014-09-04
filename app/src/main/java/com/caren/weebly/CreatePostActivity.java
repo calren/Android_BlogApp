@@ -35,7 +35,9 @@ public class CreatePostActivity extends Activity {
     public final static int EDIT_TEXT_ACTIVITY_REQUEST_CODE = 35;
     public final static int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 100;
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    public final static int EDIT_IMAGE_ACTIVITY_REQUEST_CODE = 1035;
     public String photoFileName = "photo.jpg"; //TODO
+    public String photoFileNameChanged = "blah.jpg";
 
     private boolean editing = false;
 
@@ -48,6 +50,7 @@ public class CreatePostActivity extends Activity {
 
     long blog_post_id = -1;
     int num_of_items = 0;
+    int lastPositionEdit = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +136,14 @@ public class CreatePostActivity extends Activity {
 
         }
 
+        // picture changed
+        if (requestCode == EDIT_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Uri takenPhotoUri = Utils.getPhotoFileUri(photoFileNameChanged);
+            aPostItems.get(lastPositionEdit).setPost_value(takenPhotoUri.toString());
+            adapterPosts.notifyDataSetChanged();
+
+        }
+
         // text field entered
         if (resultCode == RESULT_OK && requestCode == WRITE_TEXT_ACTIVITY_REQUEST_CODE) {
             String text = data.getExtras().getString("new_item");
@@ -141,7 +152,7 @@ public class CreatePostActivity extends Activity {
             adapterPosts.notifyDataSetChanged();
         }
 
-        // text field entered
+        // text field changed
         if (resultCode == RESULT_OK && requestCode == EDIT_TEXT_ACTIVITY_REQUEST_CODE) {
             String text = data.getExtras().getString("new_item");
             int position = data.getExtras().getInt("position");
@@ -191,18 +202,6 @@ public class CreatePostActivity extends Activity {
 
     private void setupListViewListener() {
 
-        // remove with long click?
-//        lvItems.setOnItemLongClickListener(new OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long rowId) {
-//                items.remove(position);
-//                preSorted.remove(((TextView)view).getText());
-//                itemsAdapter.notifyDataSetChanged();
-//                saveItems();
-//                return true;
-//            }
-//        });
-
         // edit or delete
         lvPostItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -218,6 +217,7 @@ public class CreatePostActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
+                            lastPositionEdit = position;
                             switch (type) {
                                 case TEXT:
                                     Intent i = new Intent(CreatePostActivity.this, EditTextActivity.class);
@@ -225,16 +225,37 @@ public class CreatePostActivity extends Activity {
                                     i.putExtra("old_text", aPostItems.get(position).getPost_value());
                                     startActivityForResult(i, EDIT_TEXT_ACTIVITY_REQUEST_CODE);
 
-                            }
+                                case IMAGE:
+                                    AlertDialog.Builder getImageFrom = new AlertDialog.Builder(CreatePostActivity.this);
+                                    getImageFrom.setTitle("Select:");
+                                    final CharSequence[] opsChars = {"Take a picture", "Open Gallery"};
+                                    getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener(){
 
-//                            aPostItems.set()
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if(which == 0){
+                                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                                intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri(photoFileNameChanged)); // set the image file name
+                                                // Start the image capture intent to take photo
+
+                                                startActivityForResult(intent, EDIT_IMAGE_ACTIVITY_REQUEST_CODE);
+                                            }else {
+                                                // TODO : choose from gallery
+                                            }
+                                            dialog.dismiss();
+                                        }
+                                    });
+
+                                    getImageFrom.show();
+                                case VIDEO:
+                                    //TODO
+                            }
 
                         } else {
                             // delete
                             aPostItems.remove(position);
                             adapterPosts.notifyDataSetChanged();
                         }
-                        dialog.dismiss();
                     }
                 });
 

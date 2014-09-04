@@ -142,7 +142,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     public void addBlogPostSummary(long bpID, String summary) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_SUMMARY, summary);
+
+        db.update(TABLE_BLOGPOSTS, cv, "id "+"="+bpID, null);
+        db.close();
     }
 
 

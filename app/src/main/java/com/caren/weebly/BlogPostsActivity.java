@@ -35,16 +35,11 @@ public class BlogPostsActivity extends Activity {
 
         db = new DataBaseHandler(this);
 
-        List<BlogPost> blogPosts = db.getAllPosts();
-
-        for (BlogPost bp : blogPosts) {
-            BlogPost blogToAdd = new BlogPost(bp.get_title(), bp.get_summary(), bp.get_id());
-            aPosts.add(blogToAdd);
-        }
-
-        bpAdapter = new BlogPostAdapter(this, aPosts);
         lvBlogPosts = (ListView) findViewById(R.id.lvBlogPosts);
+        bpAdapter = new BlogPostAdapter(this, aPosts);
         lvBlogPosts.setAdapter(bpAdapter);
+
+        getListOfBlogPosts();
 
         setupListViewListener();
     }
@@ -82,15 +77,25 @@ public class BlogPostsActivity extends Activity {
         startActivityForResult(i, CREATE_POST_ACTIVITY_REQUEST_CODE);
     }
 
+    public void getListOfBlogPosts() {
+        aPosts.clear();
+
+        List<BlogPost> blogPosts = db.getAllPosts();
+
+        for (BlogPost bp : blogPosts) {
+            BlogPost blogToAdd = new BlogPost(bp.get_title(), bp.get_summary(), bp.get_id());
+            aPosts.add(blogToAdd);
+        }
+
+        bpAdapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         BlogPost bg;
 
         if (requestCode == CREATE_POST_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            bg = new BlogPost(data.getExtras().getString("title"), data.getExtras().getString("summary"), data.getExtras().getLong("id"));
-            aPosts.add(bg);
-            bpAdapter.notifyDataSetChanged();
-
+            getListOfBlogPosts();
         }
     }
 

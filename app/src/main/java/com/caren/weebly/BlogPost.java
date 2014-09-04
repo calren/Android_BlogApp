@@ -29,19 +29,6 @@ public class BlogPost {
         this._id = id;
     }
 
-    public BlogPost(String title, String date, String summary) {
-        this._title = title;
-        this._date = date;
-        this._summary = summary;
-    }
-
-    public BlogPost(String title, String date, String summary, ArrayList<String> items) {
-        this._title = title;
-        this._date = date;
-        this._summary = summary;
-        this._items = items;
-    }
-
     public long get_id() {
         return _id;
     }

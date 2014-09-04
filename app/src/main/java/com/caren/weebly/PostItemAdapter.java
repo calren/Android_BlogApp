@@ -1,22 +1,17 @@
 package com.caren.weebly;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.net.Uri;
-import android.opengl.Matrix;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class PostItemAdapter extends ArrayAdapter<PostItem> {
@@ -39,15 +34,11 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the data item for this position
         PostItem item = getItem(position);
         int type = getItemViewType(position);
 
-        // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            // Get the data item type for this position
             type = getItemViewType(position);
-            // Inflate XML layout based on the type
             convertView = getInflatedLayoutForType(type);
         }
 

@@ -94,7 +94,7 @@ public class BlogPostsActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         BlogPost bg;
 
-        if (requestCode == CREATE_POST_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+        if ( ((requestCode == CREATE_POST_ACTIVITY_REQUEST_CODE) || (requestCode == EDIT_POST_ACTIVITY_REQUEST_CODE)) && resultCode == RESULT_OK) {
             getListOfBlogPosts();
         }
     }

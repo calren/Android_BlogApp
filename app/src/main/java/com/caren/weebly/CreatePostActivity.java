@@ -56,6 +56,7 @@ public class CreatePostActivity extends Activity {
         lvPostItems = (DragSortListView) findViewById(R.id.lvPostItems);
         lvPostItems.setDragEnabled(true);
         etTitle = (EditText) findViewById(R.id.etPostTitle);
+        etTitle.requestFocus();
         aPostItems = new ArrayList<PostItem>();
 
         // if editing post, populate data
@@ -224,7 +225,6 @@ public class CreatePostActivity extends Activity {
         if (resultCode == RESULT_OK && requestCode == VIDEO_ACTIVITY_REQUEST_CODE) {
             if (data != null) {
                 Uri videoUri = data.getData();
-                System.out.println("video uri before saving is: " + videoUri);
                 postItem = new PostItem(blog_post_id, "VIDEO", videoUri.toString(), String.valueOf(num_of_items++));
                 aPostItems.add(postItem);
                 adapterPosts.notifyDataSetChanged();

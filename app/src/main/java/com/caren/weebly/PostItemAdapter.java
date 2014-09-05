@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -69,12 +68,12 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
                         buttonStart.setVisibility(View.VISIBLE);
                     }
                 });
-//                vvVideo.setMediaController(mc);
+                vvVideo.setMediaController(mc);
                 vvVideo.setVideoURI(Uri.parse(item.getPost_value()));
                 buttonStart.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        vvVideo.start();
                         buttonStart.setVisibility(View.INVISIBLE);
+                        vvVideo.start();
                     }
                 });
 

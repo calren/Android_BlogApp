@@ -30,7 +30,7 @@ public class CreatePostActivity extends Activity {
     public final static int PICK_PHOTO_ACTIVITY_REQUEST_CODE = 1035;
     public final static int EDIT_IMAGE_ACTIVITY_REQUEST_CODE = 1036;
     public int photoCount = 1;
-    public String photoFileNameChanged = "blah.jpg";
+    public String lastPhotoEdit = "";
 
     private boolean editing = false;
 
@@ -207,7 +207,7 @@ public class CreatePostActivity extends Activity {
 
         // picture changed
         if (requestCode == EDIT_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Uri takenPhotoUri = Utils.getPhotoFileUri(photoFileNameChanged);
+            Uri takenPhotoUri = Utils.getPhotoFileUri(lastPhotoEdit);
             aPostItems.get(lastPositionEdit).setPost_value(takenPhotoUri.toString());
             adapterPosts.notifyDataSetChanged();
         }
@@ -332,7 +332,8 @@ public class CreatePostActivity extends Activity {
                                         public void onClick(DialogInterface dialog, int which) {
                                             if(which == 0){
                                                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                                intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri(photoFileNameChanged)); // set the image file name
+                                                lastPhotoEdit = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + ".jpg";
+                                                intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri(lastPhotoEdit));
                                                 startActivityForResult(intent, EDIT_IMAGE_ACTIVITY_REQUEST_CODE);
                                             } else {
                                                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

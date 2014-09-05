@@ -11,3 +11,5 @@ Functionalities:
   
 Data is persisted with SQLite.
 
+![Video Walkthrough](blog.gif)
+

@@ -50,8 +50,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java/models" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java/Activities" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java/com/caren/weebly/activities" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/java/com/caren/weebly/adapters" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/java/com/caren/weebly/models" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/jni" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/res" type="java-test-resource" />

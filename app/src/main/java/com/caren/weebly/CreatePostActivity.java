@@ -27,7 +27,8 @@ public class CreatePostActivity extends Activity {
     private final int REQUEST_CODE = 20;
     public final static int WRITE_TEXT_ACTIVITY_REQUEST_CODE = 34;
     public final static int EDIT_TEXT_ACTIVITY_REQUEST_CODE = 35;
-    public final static int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 100;
+    public final static int EDIT_VIDEO_ACTIVITY_REQUEST_CODE = 100;
+    public final static int VIDEO_ACTIVITY_REQUEST_CODE = 101;
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public final static int PICK_PHOTO_ACTIVITY_REQUEST_CODE = 1035;
     public final static int EDIT_IMAGE_ACTIVITY_REQUEST_CODE = 1036;
@@ -161,11 +162,12 @@ public class CreatePostActivity extends Activity {
                 if(which == 0){
                     Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                     if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(takeVideoIntent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+                        startActivityForResult(takeVideoIntent, VIDEO_ACTIVITY_REQUEST_CODE);
                     }
                 } else {
-                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, PICK_PHOTO_ACTIVITY_REQUEST_CODE);
+                    Intent intentChoose = new Intent(Intent.ACTION_GET_CONTENT);
+                    intentChoose.setType("video/*");
+                    startActivityForResult(intentChoose, VIDEO_ACTIVITY_REQUEST_CODE);
                 }
                 dialog.dismiss();
             }
@@ -182,6 +184,7 @@ public class CreatePostActivity extends Activity {
         // picture taken
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri takenPhotoUri = Utils.getPhotoFileUri("photo" + photoCount + ".jpg");
+            photoCount++;
             postItem = new PostItem(blog_post_id, "IMAGE", takenPhotoUri.toString(), String.valueOf(num_of_items++));
             aPostItems.add(postItem);
             adapterPosts.notifyDataSetChanged();
@@ -198,12 +201,30 @@ public class CreatePostActivity extends Activity {
             }
         }
 
-            // picture changed
+        // picture changed
         if (requestCode == EDIT_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri takenPhotoUri = Utils.getPhotoFileUri(photoFileNameChanged);
             aPostItems.get(lastPositionEdit).setPost_value(takenPhotoUri.toString());
             adapterPosts.notifyDataSetChanged();
+        }
 
+        // video taken
+        if (resultCode == RESULT_OK && requestCode == VIDEO_ACTIVITY_REQUEST_CODE) {
+            if (data != null) {
+                Uri videoUri = data.getData();
+                postItem = new PostItem(blog_post_id, "VIDEO", videoUri.toString(), String.valueOf(num_of_items++));
+                aPostItems.add(postItem);
+                adapterPosts.notifyDataSetChanged();
+            }
+        }
+
+        // video changed
+        if (resultCode == RESULT_OK && requestCode == EDIT_VIDEO_ACTIVITY_REQUEST_CODE) {
+            if (data != null) {
+                Uri videoUri = data.getData();
+                aPostItems.get(lastPositionEdit).setPost_value(videoUri.toString());
+                adapterPosts.notifyDataSetChanged();
+            }
         }
 
         // text field entered
@@ -220,16 +241,6 @@ public class CreatePostActivity extends Activity {
             int position = data.getExtras().getInt("position");
             aPostItems.get(position).setPost_value(text);
             adapterPosts.notifyDataSetChanged();
-        }
-
-        // video taken
-        if (resultCode == RESULT_OK && requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
-            if (data != null) {
-                Uri videoUri = data.getData();
-                postItem = new PostItem(blog_post_id, "VIDEO", videoUri.toString(), String.valueOf(num_of_items++));
-                aPostItems.add(postItem);
-                adapterPosts.notifyDataSetChanged();
-            }
         }
     }
 
@@ -328,26 +339,28 @@ public class CreatePostActivity extends Activity {
                                     break;
                                 case VIDEO:
                                     //TODO
-                                    AlertDialog.Builder editVideo = new AlertDialog.Builder(CreatePostActivity.this);
-                                    editVideo.setTitle("Select:");
-                                    final CharSequence[] opt = {"Take a picture", "Open Gallery"};
-                                    editVideo.setItems(opt, new android.content.DialogInterface.OnClickListener(){
+                                    AlertDialog.Builder getVideoFrom = new AlertDialog.Builder(CreatePostActivity.this);
+                                    getVideoFrom.setTitle("Select:");
+                                    final CharSequence[] ops = {"Take a video", "Open Gallery"};
+                                    getVideoFrom.setItems(ops, new android.content.DialogInterface.OnClickListener() {
 
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             if(which == 0){
-                                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                                intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri(photoFileNameChanged)); // set the video file name
-                                                // Start the image capture intent to take photo
-
-                                                startActivityForResult(intent, EDIT_IMAGE_ACTIVITY_REQUEST_CODE);
+                                                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                                                if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+                                                    startActivityForResult(takeVideoIntent, EDIT_VIDEO_ACTIVITY_REQUEST_CODE);
+                                                }
                                             } else {
-                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                                startActivityForResult(intent, PICK_PHOTO_ACTIVITY_REQUEST_CODE);
+                                                Intent intentChoose = new Intent(Intent.ACTION_GET_CONTENT);
+                                                intentChoose.setType("video/*");
+                                                startActivityForResult(intentChoose, EDIT_VIDEO_ACTIVITY_REQUEST_CODE);
                                             }
+                                            dialog.dismiss();
                                         }
                                     });
-                                    editVideo.show();
+
+                                    getVideoFrom.show();
                                     break;
                             }
 

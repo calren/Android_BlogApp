@@ -69,6 +69,10 @@ public class CreatePostActivity extends Activity {
             etTitle.setSelection(etTitle.getText().length());
 
             aPostItems = db.getAllItems(blog_post_id);
+
+            for (PostItem p : aPostItems) {
+                System.out.println("item: " + p.getPost_value());
+            }
         }
 
         // create a blog post entry in the data table if this is new
@@ -126,8 +130,7 @@ public class CreatePostActivity extends Activity {
         startActivityForResult(i, WRITE_TEXT_ACTIVITY_REQUEST_CODE);
     }
 
-    // TODO: this method seems clunky
-    public void addPicture(View view) {
+     public void addPicture(View view) {
 
         AlertDialog.Builder getImageFrom = new AlertDialog.Builder(CreatePostActivity.this);
         getImageFrom.setTitle("Select:");
@@ -166,9 +169,9 @@ public class CreatePostActivity extends Activity {
                         startActivityForResult(takeVideoIntent, VIDEO_ACTIVITY_REQUEST_CODE);
                     }
                 } else {
-                    Intent intentChoose = new Intent(Intent.ACTION_GET_CONTENT);
-                    intentChoose.setType("video/*");
-                    startActivityForResult(intentChoose, VIDEO_ACTIVITY_REQUEST_CODE);
+                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+                    intent.setType("video/*");
+                    startActivityForResult(intent, VIDEO_ACTIVITY_REQUEST_CODE);
                 }
                 dialog.dismiss();
             }
@@ -213,6 +216,7 @@ public class CreatePostActivity extends Activity {
         if (resultCode == RESULT_OK && requestCode == VIDEO_ACTIVITY_REQUEST_CODE) {
             if (data != null) {
                 Uri videoUri = data.getData();
+                System.out.println("video uri before saving is: " + videoUri);
                 postItem = new PostItem(blog_post_id, "VIDEO", videoUri.toString(), String.valueOf(num_of_items++));
                 aPostItems.add(postItem);
                 adapterPosts.notifyDataSetChanged();

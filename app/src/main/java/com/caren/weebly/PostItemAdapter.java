@@ -60,6 +60,7 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
 
                 MediaController mc = new MediaController(this.getContext());
                 final ImageButton buttonStart = (ImageButton) convertView.findViewById(R.id.play_button);
+                vvVideo.setVideoURI(Uri.parse(item.getPost_value()));
 
                 mc.setAnchorView(vvVideo);
                 mc.setMediaPlayer(vvVideo);
@@ -69,7 +70,6 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
                     }
                 });
                 vvVideo.setMediaController(mc);
-                vvVideo.setVideoURI(Uri.parse(item.getPost_value()));
                 buttonStart.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         buttonStart.setVisibility(View.INVISIBLE);

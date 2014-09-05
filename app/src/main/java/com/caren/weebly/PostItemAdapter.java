@@ -2,11 +2,14 @@ package com.caren.weebly;
 
 import android.content.Context;
 
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -54,8 +57,38 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
                 break;
             case 2:
                 final VideoView vvVideo = (VideoView) convertView.findViewById(R.id.video_view);
-                vvVideo.setVideoURI(Uri.parse(item.getPost_value()));
                 vvVideo.setMediaController(new MediaController(this.getContext()));
+
+                MediaController mc = new MediaController(this.getContext());
+                final ImageButton buttonStart = (ImageButton) convertView.findViewById(R.id.play_button);
+
+                mc.setAnchorView(vvVideo);
+                mc.setMediaPlayer(vvVideo);
+                vvVideo.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+                {
+                    public void onCompletion(MediaPlayer mp)
+                    {
+                        buttonStart.setVisibility(View.VISIBLE);
+
+                    }
+                });
+                Uri uri = Uri.parse(item.getPost_value());
+                vvVideo.setMediaController(mc);
+                vvVideo.setVideoURI(uri);
+                buttonStart.setOnClickListener(new View.OnClickListener() {
+
+                    public void onClick(View v) {
+                        vvVideo.start();
+                        buttonStart.setVisibility(View.INVISIBLE);
+                    }
+
+                });
+
+
+
+
+
+
                 break;
 
         }

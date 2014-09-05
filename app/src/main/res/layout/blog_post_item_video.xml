@@ -3,10 +3,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <VideoView
-        android:id="@+id/video_view"
+    <FrameLayout
+        android:id="@+id/video_frame"
         android:layout_width="fill_parent"
         android:layout_height="150dp"
-        />
+        >
+
+        <VideoView
+            android:id="@+id/video_view"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical|center_horizontal"
+            />
+
+        <ImageButton
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:src="@drawable/play_btn"
+            />
+
+    </FrameLayout>
 
 </RelativeLayout>

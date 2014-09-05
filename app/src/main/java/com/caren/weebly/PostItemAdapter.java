@@ -64,30 +64,19 @@ public class PostItemAdapter extends ArrayAdapter<PostItem> {
 
                 mc.setAnchorView(vvVideo);
                 mc.setMediaPlayer(vvVideo);
-                vvVideo.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
-                {
-                    public void onCompletion(MediaPlayer mp)
-                    {
+                vvVideo.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    public void onCompletion(MediaPlayer mp) {
                         buttonStart.setVisibility(View.VISIBLE);
-
                     }
                 });
-                Uri uri = Uri.parse(item.getPost_value());
                 vvVideo.setMediaController(mc);
-                vvVideo.setVideoURI(uri);
+                vvVideo.setVideoURI(Uri.parse(item.getPost_value()));
                 buttonStart.setOnClickListener(new View.OnClickListener() {
-
                     public void onClick(View v) {
                         vvVideo.start();
                         buttonStart.setVisibility(View.INVISIBLE);
                     }
-
                 });
-
-
-
-
-
 
                 break;
 

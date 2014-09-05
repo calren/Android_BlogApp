@@ -19,7 +19,7 @@ android {
     }
     sourceSets {
         main {
-            java.srcDirs = ['src/main/java', 'src/main/java/models', 'src/main/java/Activities', 'src/main/java/com/caren/weebly/activities']
+            java.srcDirs = ['src/main/java', 'src/main/java/models', 'src/main/java/Activities', 'src/main/java/com/caren/weebly/activities', 'src/main/java/com/caren/weebly/adapters', 'src/main/java/com/caren/weebly/models']
         }
     }
 }

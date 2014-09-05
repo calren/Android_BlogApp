@@ -4,6 +4,8 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <FrameLayout
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:id="@+id/video_frame"
         android:layout_width="fill_parent"
         android:layout_height="150dp"

@@ -343,7 +343,6 @@ public class CreatePostActivity extends Activity {
                                     getImageFrom.show();
                                     break;
                                 case VIDEO:
-                                    //TODO
                                     AlertDialog.Builder getVideoFrom = new AlertDialog.Builder(CreatePostActivity.this);
                                     getVideoFrom.setTitle("Select:");
                                     final CharSequence[] ops = {"Take a video", "Open Gallery"};
@@ -357,9 +356,9 @@ public class CreatePostActivity extends Activity {
                                                     startActivityForResult(takeVideoIntent, EDIT_VIDEO_ACTIVITY_REQUEST_CODE);
                                                 }
                                             } else {
-                                                Intent intentChoose = new Intent(Intent.ACTION_GET_CONTENT);
-                                                intentChoose.setType("video/*");
-                                                startActivityForResult(intentChoose, EDIT_VIDEO_ACTIVITY_REQUEST_CODE);
+                                                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                                                intent.setType("video/*");
+                                                startActivityForResult(intent, EDIT_VIDEO_ACTIVITY_REQUEST_CODE);
                                             }
                                             dialog.dismiss();
                                         }

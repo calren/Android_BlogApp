@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class BlogPostsActivity extends Activity {
     ArrayList<BlogPost> aPosts;
     BlogPostAdapter bpAdapter;
     ListView lvBlogPosts;
+    TextView tvPlaceHolder;
 
     DataBaseHandler db;
 
@@ -36,6 +38,7 @@ public class BlogPostsActivity extends Activity {
         db = new DataBaseHandler(this);
 
         lvBlogPosts = (ListView) findViewById(R.id.lvBlogPosts);
+        tvPlaceHolder = (TextView) findViewById(R.id.tvPlaceHolder);
         bpAdapter = new BlogPostAdapter(this, aPosts);
         lvBlogPosts.setAdapter(bpAdapter);
 
@@ -85,6 +88,12 @@ public class BlogPostsActivity extends Activity {
         for (BlogPost bp : blogPosts) {
             BlogPost blogToAdd = new BlogPost(bp.get_title(), bp.get_summary(), bp.get_id());
             aPosts.add(blogToAdd);
+        }
+
+        if (blogPosts.size() > 0) {
+            tvPlaceHolder.setVisibility(View.INVISIBLE);
+        } else {
+            tvPlaceHolder.setVisibility(View.VISIBLE);
         }
 
         bpAdapter.notifyDataSetChanged();

@@ -67,6 +67,7 @@ public class CreatePostActivity extends Activity {
             String title = bp.get_title();
 
             etTitle.setText(title);
+            etTitle.setSelection(etTitle.getText().length());
 
             aPostItems = db.getAllItems(blog_post_id);
         }
@@ -312,8 +313,6 @@ public class CreatePostActivity extends Activity {
                                             if(which == 0){
                                                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri(photoFileNameChanged)); // set the image file name
-                                                // Start the image capture intent to take photo
-
                                                 startActivityForResult(intent, EDIT_IMAGE_ACTIVITY_REQUEST_CODE);
                                             } else {
                                                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -325,6 +324,27 @@ public class CreatePostActivity extends Activity {
                                     break;
                                 case VIDEO:
                                     //TODO
+                                    AlertDialog.Builder editVideo = new AlertDialog.Builder(CreatePostActivity.this);
+                                    editVideo.setTitle("Select:");
+                                    final CharSequence[] opt = {"Take a picture", "Open Gallery"};
+                                    editVideo.setItems(opt, new android.content.DialogInterface.OnClickListener(){
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if(which == 0){
+                                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                                intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri(photoFileNameChanged)); // set the video file name
+                                                // Start the image capture intent to take photo
+
+                                                startActivityForResult(intent, EDIT_IMAGE_ACTIVITY_REQUEST_CODE);
+                                            } else {
+                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                                startActivityForResult(intent, PICK_PHOTO_ACTIVITY_REQUEST_CODE);
+                                            }
+                                        }
+                                    });
+                                    editVideo.show();
+                                    break;
                             }
 
                         } else {

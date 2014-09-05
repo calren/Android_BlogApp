@@ -25,6 +25,7 @@ public class EditTextActivity extends Activity {
             position = getIntent().getIntExtra("position", -1);
             System.out.println("position is " + position);
             etNewItem.setText(oldText);
+            etNewItem.setSelection(etNewItem.getText().length());
         } catch (Exception e) {
             // this is a new edit
         }

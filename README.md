@@ -13,4 +13,5 @@ Functionalities:
 Data is persisted with SQLite.
 
 ![Video Walkthrough](blog.gif)
+![Video Walkthrough2](blog2.gif)
 

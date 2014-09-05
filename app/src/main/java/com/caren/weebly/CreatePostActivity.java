@@ -31,7 +31,7 @@ public class CreatePostActivity extends Activity {
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public final static int PICK_PHOTO_ACTIVITY_REQUEST_CODE = 1035;
     public final static int EDIT_IMAGE_ACTIVITY_REQUEST_CODE = 1036;
-    public String photoFileName = "photo.jpg"; //TODO
+    public int photoCount = 1;
     public String photoFileNameChanged = "blah.jpg";
 
     private boolean editing = false;
@@ -136,7 +136,7 @@ public class CreatePostActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 if(which == 0){
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri(photoFileName)); // set the image file name
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri("photo" + photoCount + ".jpg")); // set the image file name
                     // Start the image capture intent to take photo
                     startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                 }else {
@@ -181,7 +181,7 @@ public class CreatePostActivity extends Activity {
 
         // picture taken
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Uri takenPhotoUri = Utils.getPhotoFileUri(photoFileName);
+            Uri takenPhotoUri = Utils.getPhotoFileUri("photo" + photoCount + ".jpg");
             postItem = new PostItem(blog_post_id, "IMAGE", takenPhotoUri.toString(), String.valueOf(num_of_items++));
             aPostItems.add(postItem);
             adapterPosts.notifyDataSetChanged();
@@ -320,7 +320,7 @@ public class CreatePostActivity extends Activity {
                                                 startActivityForResult(intent, EDIT_IMAGE_ACTIVITY_REQUEST_CODE);
                                             } else {
                                                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                                startActivityForResult(intent, PICK_PHOTO_ACTIVITY_REQUEST_CODE);
+                                                startActivityForResult(intent, EDIT_IMAGE_ACTIVITY_REQUEST_CODE);
                                             }
                                         }
                                     });

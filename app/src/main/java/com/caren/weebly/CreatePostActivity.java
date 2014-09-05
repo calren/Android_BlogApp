@@ -57,6 +57,7 @@ public class CreatePostActivity extends Activity {
         etTitle = (EditText) findViewById(R.id.etPostTitle);
         aPostItems = new ArrayList<PostItem>();
 
+        // if editing post, populate data
         if (getIntent().getLongExtra("blog_post_id", 0) != 0) {
             editing = true;
             blog_post_id = getIntent().getLongExtra("blog_post_id", 0);
@@ -70,7 +71,23 @@ public class CreatePostActivity extends Activity {
             aPostItems = db.getAllItems(blog_post_id);
         }
 
+        // create a blog post entry in the data table if this is new
+        if (blog_post_id < 0) {
+            String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+            BlogPost bp = new BlogPost(date);
+            blog_post_id = db.addPost(bp);
+        }
 
+        setupDragDopListView();
+
+        // Attach the adapter
+        adapterPosts = new PostItemAdapter(this, aPostItems);
+        lvPostItems.setAdapter(adapterPosts);
+
+        setupListViewListener();
+    }
+
+    public void setupDragDopListView() {
         lvPostItems.setAdapter(adapterPosts);
         lvPostItems.setDropListener(onDrop);
         lvPostItems.setRemoveListener(onRemove);
@@ -84,19 +101,6 @@ public class CreatePostActivity extends Activity {
         lvPostItems.setOnTouchListener(controller);
         lvPostItems.setDragEnabled(true);
 
-
-        // Attach the adapter
-        adapterPosts = new PostItemAdapter(this, aPostItems);
-        lvPostItems.setAdapter(adapterPosts);
-
-        // create a blog post entry in the data table if this is new
-        if (blog_post_id < 0) {
-            String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-            BlogPost bp = new BlogPost(date);
-            blog_post_id = db.addPost(bp);
-        }
-
-        setupListViewListener();
     }
 
     private DragSortListView.DropListener onDrop = new DragSortListView.DropListener() {

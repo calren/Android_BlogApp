@@ -269,8 +269,12 @@ public class CreatePostActivity extends Activity {
             summary = aPostItems.get(0).getPost_value();
         }
 
-        if (summary.contains("://")) {
-            summary = "<Media Item>" + summary;
+        if (summary.contains("://media")) {
+            if (summary.contains("video")) {
+                summary = "Video Item";
+            } else {
+                summary = "Image Item";
+            }
         }
 
         summary = summary.substring(0, Math.min(summary.length(), 50));

@@ -29,7 +29,8 @@ public class CreatePostActivity extends Activity {
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public final static int PICK_PHOTO_ACTIVITY_REQUEST_CODE = 1035;
     public final static int EDIT_IMAGE_ACTIVITY_REQUEST_CODE = 1036;
-    public int photoCount = 1;
+    public final static int CHOSE_EDIT_IMAGE__ACTIVITY_REQUEST_CODE = 1037;
+    public String lastPhotoTaken = "";
     public String lastPhotoEdit = "";
 
     private boolean editing = false;
@@ -141,7 +142,8 @@ public class CreatePostActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 if(which == 0){
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri("photo" + photoCount + ".jpg")); // set the image file name
+                    lastPhotoTaken = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + ".jpg";
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoFileUri(lastPhotoTaken)); // set the image file name
                     // Start the image capture intent to take photo
                     startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                 }else {
@@ -187,8 +189,7 @@ public class CreatePostActivity extends Activity {
 
         // picture taken
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Uri takenPhotoUri = Utils.getPhotoFileUri("photo" + photoCount + ".jpg");
-            photoCount++;
+            Uri takenPhotoUri = Utils.getPhotoFileUri(lastPhotoTaken);
             postItem = new PostItem(blog_post_id, "IMAGE", takenPhotoUri.toString(), String.valueOf(num_of_items++));
             aPostItems.add(postItem);
             adapterPosts.notifyDataSetChanged();
@@ -211,6 +212,13 @@ public class CreatePostActivity extends Activity {
             aPostItems.get(lastPositionEdit).setPost_value(takenPhotoUri.toString());
             adapterPosts.notifyDataSetChanged();
         }
+
+        if (requestCode == CHOSE_EDIT_IMAGE__ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Uri takenPhotoUri = data.getData();
+            aPostItems.get(lastPositionEdit).setPost_value(takenPhotoUri.toString());
+            adapterPosts.notifyDataSetChanged();
+        }
+
 
         // video taken
         if (resultCode == RESULT_OK && requestCode == VIDEO_ACTIVITY_REQUEST_CODE) {
@@ -337,7 +345,7 @@ public class CreatePostActivity extends Activity {
                                                 startActivityForResult(intent, EDIT_IMAGE_ACTIVITY_REQUEST_CODE);
                                             } else {
                                                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                                startActivityForResult(intent, EDIT_IMAGE_ACTIVITY_REQUEST_CODE);
+                                                startActivityForResult(intent, CHOSE_EDIT_IMAGE__ACTIVITY_REQUEST_CODE);
                                             }
                                         }
                                     });

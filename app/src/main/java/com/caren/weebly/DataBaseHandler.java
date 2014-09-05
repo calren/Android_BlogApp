@@ -124,6 +124,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_DATE, bp.get_date());
+        values.put(KEY_TITLE, bp.get_date());
 
         // Inserting Row
         long rowId = db.insert(TABLE_BLOGPOSTS, null, values);

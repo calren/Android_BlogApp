@@ -15,9 +15,11 @@ import android.widget.EditText;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class CreatePostActivity extends Activity {
 
@@ -79,8 +81,9 @@ public class CreatePostActivity extends Activity {
 
         // create a blog post entry in the data table if this is new
         if (blog_post_id < 0) {
-            String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-            BlogPost bp = new BlogPost(date);
+            DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+            Date date = new Date();
+            BlogPost bp = new BlogPost(dateFormat.format(date).toString());
             blog_post_id = db.addPost(bp);
         }
 

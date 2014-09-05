@@ -92,11 +92,17 @@ public class BlogPostsActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        BlogPost bg;
-
         if ( ((requestCode == CREATE_POST_ACTIVITY_REQUEST_CODE) || (requestCode == EDIT_POST_ACTIVITY_REQUEST_CODE)) && resultCode == RESULT_OK) {
             getListOfBlogPosts();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getListOfBlogPosts();
+
     }
 
 }
